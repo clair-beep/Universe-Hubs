@@ -21,10 +21,7 @@ exports.getHome = async (req, res) => {
 
 exports.getArticles = async (req, res) => {
   try {
-    const cacheExpirationTime = parseFloat(process.env.CACHE_EXPIRATION_TIME);
-    if (isNaN(cacheExpirationTime) || cacheExpirationTime <= 0) {
-      throw new Error('Cache timeout must be a positive number');
-    }
+    const cacheExpirationTime = 60000;
 
     console.log('query object:', req.query.title_contains);
 
@@ -90,10 +87,7 @@ exports.getArticles = async (req, res) => {
 
 exports.getThisWeekNews = async (req, res) => {
   try {
-    const cacheExpirationTime = parseFloat(process.env.CACHE_EXPIRATION_TIME);
-    if (isNaN(cacheExpirationTime) || cacheExpirationTime <= 0) {
-      throw new Error('Cache timeout must be a positive number');
-    }
+    const cacheExpirationTime = 60000;
     let spaceNews;
 
     const limit = parseInt(req.query.limit) || 10; // number of results to return per page
