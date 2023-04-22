@@ -67,34 +67,13 @@
       </div>
     </header>
     <!-- About section-->
-    <div class="container mt-5">
+    <section id="container mt-5">
       <div class="row">
         <div class="col-lg-8">
-          <% if (spaceNews && Object.keys(spaceNews).length !== 0) { %>
-
           <!-- Post content-->
           <article>
-            <div class="pagination">
-              <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                  <% if (prevPage) { %>
-                  <li class="page-item">
-                    <a class="page-link" href="<%= prevPage %>">Previous</a>
-                  </li>
-
-                  <% } %> <% if (nextPage) { %>
-
-                  <li class="page-item">
-                    <a class="page-link" href="<%= nextPage %>">Next</a>
-                  </li>
-
-                  <% } %>
-                </ul>
-              </nav>
-            </div>
-
-            <% for (const key in spaceNews) { %> <% const item =
-            spaceNews[key];%>
+            <% for (const key in spaceNews) { %> <% const item = spaceNews[key];
+            %>
             <!-- Post header-->
             <header class="mb-4">
               <!-- Post title-->
@@ -107,8 +86,8 @@
               <a
                 class="badge bg-secondary text-decoration-none link-light"
                 href="<%= item.url%>"
-                >Source: <%= item.news_site%>
-              </a>
+                >Source</a
+              >
             </header>
             <!-- Preview image figure-->
             <figure class="mb-4">
@@ -122,21 +101,55 @@
             <section class="mb-5">
               <p class="fs-5 mb-4"><%= item.summary%></p>
             </section>
-
-            <% } %> <% } else { %>
-            <article>
-              <h1 class="p-3">
-                No articles were found with '<span class="text-secondary"
-                  ><%= search_criteria %></span
-                >'
-              </h1>
-              <div class="col-12"></div>
-            </article>
+            <% } %>
           </article>
-          <% } %>
+          <!-- Comments section-->
+
+          <!-- Side widgets-->
+          <div class="col-lg-4">
+            <!-- Search widget-->
+            <div class="card mb-4">
+              <div class="card-header">Search</div>
+              <div class="card-body">
+                <div class="input-group">
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Enter search term..."
+                    aria-label="Enter search term..."
+                    aria-describedby="button-search"
+                  />
+                  <button
+                    class="btn btn-primary"
+                    id="button-search"
+                    type="button"
+                  >
+                    Go!
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Side widget-->
+            <div class="card mb-4">
+              <div class="card-header">Side Widget</div>
+              <div class="card-body">
+                You can put anything you want inside of these side widgets. They
+                are easy to use, and feature the Bootstrap 5 card component!
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+      <div class="articles">
+        <% for (const key in spaceNews) { %> <% const item = spaceNews[key]; %>
+        <div class="article">
+          <h2><%= item.title %></h2>
+          <a href="<%= item.url %>">Read more</a>
+        </div>
+        <% } %>
+      </div>
+    </section>
 
     <!-- Footer-->
     <footer class="py-5 bg-dark">

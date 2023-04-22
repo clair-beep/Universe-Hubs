@@ -30,3 +30,13 @@ window.addEventListener('DOMContentLoaded', (event) => {
     });
   });
 });
+const thisWeekBtn = document.getElementById('this-week-btn');
+thisWeekBtn.addEventListener('click', async () => {
+  try {
+    const response = await fetch('/this-week-headlines');
+    const data = await response.json();
+    console.log('Space news for this week:', data);
+  } catch (error) {
+    console.error(error);
+  }
+});

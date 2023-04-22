@@ -38,13 +38,13 @@
               <a class="nav-link" href="/">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#about">Articles</a>
+              <a class="nav-link" href="/space-news">Articles</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#services">Blogs</a>
+              <a class="nav-link" href="#blogs-news">Blogs</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#contact">Reports</a>
+              <a class="nav-link" href="#reports-news">Reports</a>
             </li>
           </ul>
         </div>
@@ -58,8 +58,11 @@
           Our daily simple app that brings you the most important and engaging
           stories in space. For free.
         </p>
-        <a class="btn btn-lg btn-light" href="#about"
-          >Begin your search for this week!</a
+        <a
+          class="btn btn-lg btn-light"
+          id="this-week-btn"
+          href="/this-week-headlines"
+          >Fetch articles for this week!</a
         >
       </div>
     </header>
@@ -73,7 +76,7 @@
             >
             <input
               type="text"
-              placeholder="Enter a keyword"
+              placeholder="Search Articles: ..."
               class="form-control"
               id="title_contains"
               name="title_contains"
