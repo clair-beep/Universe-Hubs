@@ -40,12 +40,12 @@
             <li class="nav-item">
               <a class="nav-link" href="/space-news">Articles</a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a class="nav-link" href="#blogs-news">Blogs</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#reports-news">Reports</a>
-            </li>
+            </li> -->
           </ul>
         </div>
       </div>
@@ -61,7 +61,7 @@
         <a
           class="btn btn-lg btn-light"
           id="this-week-btn"
-          href="/this-week-headlines"
+          href="/this-week-headlines?<%= queryParams %>"
           >Fetch articles for this week!</a
         >
       </div>
@@ -104,7 +104,11 @@
               not hesitate to get in touch with us
             </p>
             <div class="col-12">
-              <a class="btn btn-primary" href="/">Send us your feedback</a>
+              <a
+                class="btn btn-primary"
+                href="https://forms.gle/wXUqJUG1W4SqGD1ZA"
+                >Send us your feedback</a
+              >
             </div>
           </div>
         </div>

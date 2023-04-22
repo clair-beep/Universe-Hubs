@@ -1,10 +1,18 @@
-const CACHE_EXPIRATION_TIME = 60 * 1000;
 const axios = require('axios');
 const cache = require('memory-cache');
 
 exports.getHome = async (req, res) => {
   try {
-    res.render('index');
+    const today = new Date();
+    const weekStart = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() - today.getDay(),
+    );
+    const startString = weekStart.toISOString();
+    const queryParams = `published_at__gte=${startString}`;
+
+    res.render('index', { queryParams: queryParams });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal server error');
@@ -13,6 +21,11 @@ exports.getHome = async (req, res) => {
 
 exports.getArticles = async (req, res) => {
   try {
+    const cacheExpirationTime = parseFloat(process.env.CACHE_EXPIRATION_TIME);
+    if (isNaN(cacheExpirationTime) || cacheExpirationTime <= 0) {
+      throw new Error('Cache timeout must be a positive number');
+    }
+
     console.log('query object:', req.query.title_contains);
 
     const limit = parseInt(req.query.limit) || 10; // number of results to return per page
@@ -47,7 +60,7 @@ exports.getArticles = async (req, res) => {
       cache.put(
         `spaceNews_${limit}_${offset}_${req.query.title_contains}`,
         spaceNews,
-        CACHE_EXPIRATION_TIME,
+        cacheExpirationTime,
       );
     }
 
@@ -77,31 +90,73 @@ exports.getArticles = async (req, res) => {
 
 exports.getThisWeekNews = async (req, res) => {
   try {
+    const cacheExpirationTime = parseFloat(process.env.CACHE_EXPIRATION_TIME);
+    if (isNaN(cacheExpirationTime) || cacheExpirationTime <= 0) {
+      throw new Error('Cache timeout must be a positive number');
+    }
+    let spaceNews;
+
+    const limit = parseInt(req.query.limit) || 10; // number of results to return per page
+    const offset = parseInt(req.query.offset) || 0; // number of results to skip
+
     const today = new Date();
-    const weekStart = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate() - today.getDay(),
+    const startString =
+      req.query.published_at__gte ||
+      new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate() - today.getDay(),
+      ).toISOString();
+
+    // Check if data is already in cache
+    const cachedData = cache.get(
+      `this-week-headlines${limit}_${offset}_${startString}`,
     );
-    const weekEnd = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate() + (6 - today.getDay()),
-    );
-    const startString = weekStart.toISOString();
-    const endString = weekEnd.toISOString();
-    const response = await axios.get(
-      'https://api.spaceflightnewsapi.net/v4/articles',
-      {
-        params: {
-          start_date: startString,
-          end_date: endString,
+
+    if (cachedData != null && JSON.stringify(req.query) === cachedData.query) {
+      console.log('Using cached data...');
+      spaceNews = cachedData;
+    } else {
+      // If data is not in cache, fetch it from the API
+      const response = await axios.get(
+        'https://api.spaceflightnewsapi.net/v4/articles',
+        {
+          params: {
+            start_date: startString,
+            limit,
+            offset,
+          },
         },
-      },
-    );
-    const spaceNews = response.data.results;
-    res.render('this-week-headlines', { spaceNews: spaceNews });
-    console.log('Space news for this week:', spaceNews);
+      );
+
+      spaceNews = response.data.results; // Remove `const` keyword here
+
+      // Store data in cache
+      cache.put(
+        `this-week-headlines-${limit}_${offset}_${startString}`,
+        spaceNews,
+        cacheExpirationTime,
+      );
+    }
+
+    res.render('space-news', {
+      spaceNews: spaceNews,
+      start_date: startString,
+      limit,
+      offset,
+      prevPage:
+        offset - limit >= 0
+          ? `?limit=${limit}&offset=${
+              offset - limit
+            }&published_at__gte=s=${startString}`
+          : null,
+      nextPage:
+        spaceNews.length >= limit
+          ? `?limit=${limit}&offset=${
+              offset + limit
+            }&published_at__gte=${startString}`
+          : null,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal server error');
