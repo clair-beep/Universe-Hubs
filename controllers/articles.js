@@ -12,7 +12,13 @@ exports.getHome = async (req, res) => {
     const startString = weekStart.toISOString();
     const queryParams = `published_at__gte=${startString}`;
 
-    res.render('index', { queryParams: queryParams });
+    const todaysDate = today.toISOString().slice(0, 10);
+    const url = `https://api.spaceflightnewsapi.net/v4/articles/?published_at__gte=2023-04-21`;
+
+    const response = await axios.get(url);
+    const spaceNews = response.data.results;
+    console.log('Number of properties:', Object.keys(spaceNews).length);
+    res.render('index', { queryParams: queryParams, spaceNews: spaceNews });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal server error');

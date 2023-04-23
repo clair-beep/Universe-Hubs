@@ -1,3 +1,5 @@
 node_modules/
 .env
 _data-samples/ingredient-blurr.json
+controllers/something.js
+views/something.ejs
