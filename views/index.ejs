@@ -55,8 +55,8 @@
       <div class="container px-4 text-center">
         <h1 class="fw-bolder">Welcome to Universe Hubs</h1>
         <p class="lead">
-          Our daily simple app that brings you the most important and engaging
-          stories in space. For free.
+          Get the latest space exploration, innovation and astronomy news from
+          differents sources. No ads.
         </p>
         <a
           class="btn btn-lg btn-light"
@@ -67,7 +67,7 @@
       </div>
     </header>
 
-    <section class="bg-light" id="services">
+    <!-- <section class="bg-light" id="services">
       <div class="container mx-auto col-10 col-md-8 col-lg-6">
         <form class="row g-3" method="GET" action="/space-news">
           <div class="col-md-6">
@@ -88,8 +88,145 @@
           </div>
         </form>
       </div>
-    </section>
+    </section> -->
+    <section>
+      <!-- Page content-->
+      <div class="container">
+        <div class="row">
+          <!-- Blog entries-->
+          <div class="col-lg-8">
+            <!-- Featured blog post-->
+            <div class="card mb-4">
+              <% let firstArticle = spaceNews[0]; %>
+              <a href="#!"
+                ><img
+                  class="card-img-top"
+                  src="<%= firstArticle.image_url %>"
+                  alt="..."
+              /></a>
+              <div class="card-body">
+                <div class="small text-muted">
+                  '<%= firstArticle.published_at %>'
+                </div>
+                <h2 class="card-title">'<%= firstArticle.title %>'</h2>
+                <p class="card-text">'<%= firstArticle.summary %>'</p>
+                <a class="btn btn-primary" href="<%= firstArticle.url %>"
+                  >Read more →</a
+                >
+              </div>
+            </div>
+            <!-- Nested row for older post from the same day-->
+            <% if (Object.keys(spaceNews).length > 1) { %>
+            <div class="row">
+              <% Object.entries(spaceNews).slice(1).forEach(([key, article]) =>
+              { %>
+              <div class="col-lg-6">
+                <!-- Blog post-->
+                <div class="card mb-4">
+                  <a href="#!"
+                    ><img
+                      class="card-img-top"
+                      src="<%= article.image_url%>"
+                      alt="..."
+                  /></a>
+                  <div class="card-body">
+                    <div class="small text-muted"></div>
+                    <h2 class="card-title h4"><%= article.title %></h2>
+                    <p class="card-text"><%= article.summary %></p>
+                    <a class="btn btn-primary" href="<%= article.url %>"
+                      >Read more →</a
+                    >
+                  </div>
+                </div>
+                <!-- Blog post-->
+              </div>
+              <% }); %>
+            </div>
+            <% } %>
 
+            <!-- Pagination-->
+            <nav aria-label="Pagination">
+              <hr class="my-0" />
+              <ul class="pagination justify-content-center my-4">
+                <li class="page-item disabled">
+                  <a
+                    class="page-link"
+                    href="#"
+                    tabindex="-1"
+                    aria-disabled="true"
+                    >Newer</a
+                  >
+                </li>
+                <li class="page-item active" aria-current="page">
+                  <a class="page-link" href="#!">1</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#!">2</a></li>
+                <li class="page-item"><a class="page-link" href="#!">3</a></li>
+                <li class="page-item disabled">
+                  <a class="page-link" href="#!">...</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#!">15</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="#!">Older</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <!-- Side widgets-->
+          <div class="col-lg-4">
+            <!-- Search widget-->
+            <div class="card mb-4">
+              <form class="row g-3" method="GET" action="/space-news">
+                <div class="col-md-6">
+                  <label for="title_contains" class="form-label">Search</label>
+                  <input
+                    type="text"
+                    placeholder="Search Articles: ..."
+                    class="form-control"
+                    id="title_contains"
+                    name="title_contains"
+                  />
+                </div>
+                <div class="col-12"></div>
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+              </form>
+            </div>
+            <!-- Categories widget-->
+            <!-- <div class="card mb-4">
+              <div class="card-header">Categories</div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <ul class="list-unstyled mb-0">
+                      <li><a href="#!">Web Design</a></li>
+                      <li><a href="#!">HTML</a></li>
+                      <li><a href="#!">Freebies</a></li>
+                    </ul>
+                  </div>
+                  <div class="col-sm-6">
+                    <ul class="list-unstyled mb-0">
+                      <li><a href="#!">JavaScript</a></li>
+                      <li><a href="#!">CSS</a></li>
+                      <li><a href="#!">Tutorials</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+            <!-- Side widget-->
+            <div class="card mb-4">
+              <div class="card-header">Side Widget</div>
+              <div class="card-body">
+                You can put anything you want inside of these side widgets. They
+                are easy to use, and feature the Bootstrap 5 card component!
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
     <!-- Contact section-->
     <section id="contact">
       <div class="container px-4">
