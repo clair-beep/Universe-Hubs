@@ -16,8 +16,19 @@ exports.getHome = async (req, res) => {
     const url = `https://api.spaceflightnewsapi.net/v4/articles/?published_at__gte=2023-04-21`;
 
     const response = await axios.get(url);
-    const spaceNews = response.data.results;
+    let spaceNews = response.data.results;
+    spaceNews.forEach((obj) => {
+      const dateString = obj.published_at;
+      const date = new Date(dateString);
+      const options = { month: 'long', day: 'numeric', year: 'numeric' };
+      const formattedDate = date.toLocaleDateString('en-US', options);
+
+      obj.published_at = formattedDate;
+    });
+
     console.log('Number of properties:', Object.keys(spaceNews).length);
+
+    console.log(spaceNews[0]);
     res.render('index', { queryParams: queryParams, spaceNews: spaceNews });
   } catch (error) {
     console.error(error);
@@ -54,11 +65,20 @@ exports.getArticles = async (req, res) => {
           },
         },
       );
-      console.log('Data fetched from API:', response.data.results);
+      //console.log('Data fetched from API:', response.data.results);
       spaceNews = response.data.results;
-      console.log('spaceNews:', spaceNews);
-      console.log('Number of properties:', Object.keys(spaceNews).length);
-      console.log('First item:', spaceNews[0]);
+      spaceNews.forEach((obj) => {
+        const dateString = obj.published_at;
+        const date = new Date(dateString);
+        const options = { month: 'long', day: 'numeric', year: 'numeric' };
+        const formattedDate = date.toLocaleDateString('en-US', options);
+
+        obj.published_at = formattedDate;
+      });
+
+      //console.log('spaceNews:', spaceNews);
+      //console.log('Number of properties:', Object.keys(spaceNews).length);
+      //console.log('First item:', spaceNews[0]);
 
       cache.put(
         `spaceNews_${limit}_${offset}_${req.query.title_contains}`,
@@ -129,7 +149,15 @@ exports.getThisWeekNews = async (req, res) => {
         },
       );
 
-      spaceNews = response.data.results; // Remove `const` keyword here
+      spaceNews = response.data.results;
+      spaceNews.forEach((obj) => {
+        const dateString = obj.published_at;
+        const date = new Date(dateString);
+        const options = { month: 'long', day: 'numeric', year: 'numeric' };
+        const formattedDate = date.toLocaleDateString('en-US', options);
+
+        obj.published_at = formattedDate;
+      });
 
       // Store data in cache
       cache.put(
@@ -139,7 +167,7 @@ exports.getThisWeekNews = async (req, res) => {
       );
     }
 
-    res.render('space-news', {
+    res.render('this-week-headlines', {
       spaceNews: spaceNews,
       start_date: startString,
       limit,
@@ -156,6 +184,8 @@ exports.getThisWeekNews = async (req, res) => {
               offset + limit
             }&published_at__gte=${startString}`
           : null,
+      sort: 'published_at', // add this line to sort by published_at
+      order: 'desc', // add this line to sort in ascending order
     });
   } catch (error) {
     console.error(error);
