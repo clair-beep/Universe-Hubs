@@ -51,7 +51,7 @@
       </div>
     </nav>
     <!-- Header-->
-    <header class="bg-primary bg-gradient text-white">
+    <header class="bg-primary bg-gradient text-white border-bottom mb-4">
       <div class="container px-4 text-center">
         <h1 class="fw-bolder">Welcome to Universe Hubs</h1>
         <p class="lead">
@@ -59,79 +59,90 @@
           stories in space. For free.
         </p>
         <a class="btn btn-lg btn-light" id="this-week-btn" href="/"
-          >Begin your search for this week!</a
+          >Begin your search for today!</a
         >
       </div>
     </header>
     <!-- About section-->
-    <div class="container mt-5">
+    <div class="container">
       <div class="row">
+        <% if (spaceNews && Object.keys(spaceNews).length !== 0) { %>
+        <!-- Pagination-->
+        <h1 class="p-3">
+          Articles that were found with '<span class="text-secondary"
+            ><%= search_criteria %></span
+          >'
+        </h1>
         <div class="col-lg-8">
-          <% if (spaceNews && Object.keys(spaceNews).length !== 0) { %>
+          <div class="pagination">
+            <nav aria-label="Page navigation example">
+              <ul class="pagination justify-content-center">
+                <% if (prevPage) { %>
+                <li class="page-item">
+                  <a class="page-link" href="<%= prevPage %>">Previous</a>
+                </li>
 
+                <% } %> <% if (nextPage) { %>
+
+                <li class="page-item">
+                  <a class="page-link" href="<%= nextPage %>">Next</a>
+                </li>
+
+                <% } %>
+              </ul>
+            </nav>
+          </div>
           <!-- Post content-->
-          <article>
-            <div class="pagination">
-              <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                  <% if (prevPage) { %>
-                  <li class="page-item">
-                    <a class="page-link" href="<%= prevPage %>">Previous</a>
-                  </li>
-
-                  <% } %> <% if (nextPage) { %>
-
-                  <li class="page-item">
-                    <a class="page-link" href="<%= nextPage %>">Next</a>
-                  </li>
-
-                  <% } %>
-                </ul>
-              </nav>
-            </div>
-
+          <div class="card mb-4">
             <% for (const key in spaceNews) { %> <% const item =
             spaceNews[key];%>
             <!-- Post header-->
-            <header class="mb-4">
-              <!-- Post title-->
-              <h1 class="fw-bolder mb-1"><%= item.title %></h1>
-              <!-- Post meta content-->
-              <div class="text-muted fst-italic mb-2">
-                Posted on <%= item.published_at %>, in <%= item.news_site %>
-              </div>
-              <!-- Post categories-->
-              <a
-                class="badge bg-secondary text-decoration-none link-light"
-                href="<%= item.url%>"
-                >Source: <%= item.news_site%>
-              </a>
-            </header>
-            <!-- Preview image figure-->
-            <figure class="mb-4">
-              <img
-                class="img-fluid rounded"
-                src="<%= item.image_url%>"
-                alt="..."
-              />
-            </figure>
-            <!-- Post content-->
-            <section class="mb-5">
-              <p class="fs-5 mb-4"><%= item.summary%></p>
-            </section>
-
-            <% } %> <% } else { %>
-            <article>
-              <h1 class="p-3">
-                No articles were found with '<span class="text-secondary"
-                  ><%= search_criteria %></span
-                >'
-              </h1>
-              <div class="col-12"></div>
-            </article>
-          </article>
-          <% } %>
+            <a href="#!"
+              ><img class="card-img-top" src="<%= item.image_url%>" alt="..."
+            /></a>
+            <div class="card-body">
+              <div class="small text-muted"><%= item.published_at %></div>
+              <h2 class="card-title"><%= item.title %></h2>
+              <p class="card-text"><%= item.summary%></p>
+              <a class="btn btn-primary" href="<%= item.news_site%>"
+                >Read more →</a
+              >
+            </div>
+            <% } %>
+          </div>
+          <% } else { %>
+          <div class="card mb-4">
+            <h1 class="p-3">
+              No articles were found with '<span class="text-secondary"
+                ><%= search_criteria %></span
+              >'
+            </h1>
+            <div class="col-12"></div>
+          </div>
         </div>
+        <% } %>
+      </div>
+      <div class="col-lg-4">
+        <!-- Search widget-->
+        <form class="card mb-4" method="GET" action="/space-news">
+          <div class="card-header">Search</div>
+          <div class="card-body">
+            <div class="input-group">
+              <input
+                class="form-control"
+                type="text"
+                placeholder="Enter search term..."
+                aria-label="Enter search term..."
+                aria-describedby="button-search"
+                id="title_contains"
+                name="title_contains"
+              />
+              <button class="btn btn-primary" id="button-search" type="submit">
+                Go!
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
 

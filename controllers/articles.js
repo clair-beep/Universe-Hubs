@@ -3,7 +3,11 @@ const cache = require('memory-cache');
 
 exports.getHome = async (req, res) => {
   try {
+    const limit = parseInt(req.query.limit) || 10; // number of results to return per page
+    const offset = parseInt(req.query.offset) || 0; // number of results to skip
+
     const today = new Date();
+    const todaysDate = today.toISOString().slice(0, 10);
     const weekStart = new Date(
       today.getFullYear(),
       today.getMonth(),
@@ -11,11 +15,13 @@ exports.getHome = async (req, res) => {
     );
     const startString = weekStart.toISOString();
     const queryParams = `published_at__gte=${startString}`;
+    const todayParams = `published_at__gte=${todaysDate}`;
 
-    const todaysDate = today.toISOString().slice(0, 10);
-    const url = `https://api.spaceflightnewsapi.net/v4/articles/?published_at__gte=2023-04-21`;
-
+    const url = `https://api.spaceflightnewsapi.net/v4/articles/?${todayParams}`;
+    console.log('url', url);
     const response = await axios.get(url);
+    console.log('Request URL:', response.config.url);
+    console.log('Request Query Params:', response.config.params);
     let spaceNews = response.data.results;
     spaceNews.forEach((obj) => {
       const dateString = obj.published_at;
@@ -28,7 +34,7 @@ exports.getHome = async (req, res) => {
 
     console.log('Number of properties:', Object.keys(spaceNews).length);
 
-    console.log(spaceNews[0]);
+    //console.log(spaceNews[0]);
     res.render('index', { queryParams: queryParams, spaceNews: spaceNews });
   } catch (error) {
     console.error(error);
@@ -149,7 +155,9 @@ exports.getThisWeekNews = async (req, res) => {
         },
       );
 
-      spaceNews = response.data.results;
+      spaceNews = response.data.results.sort((a, b) => {
+        return new Date(a.published_at) - new Date(b.published_at);
+      });
       spaceNews.forEach((obj) => {
         const dateString = obj.published_at;
         const date = new Date(dateString);

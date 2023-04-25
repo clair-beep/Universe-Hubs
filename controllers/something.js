@@ -1,9 +1,6 @@
 exports.getArticles = async (req, res) => {
   try {
-    const cacheExpirationTime = parseFloat(process.env.CACHE_EXPIRATION_TIME);
-    if (isNaN(cacheExpirationTime) || cacheExpirationTime <= 0) {
-      throw new Error('Cache timeout must be a positive number');
-    }
+    const cacheExpirationTime = 60000;
 
     console.log('query object:', req.query.title_contains);
 
@@ -30,11 +27,20 @@ exports.getArticles = async (req, res) => {
           },
         },
       );
-      console.log('Data fetched from API:', response.data.results);
+      //console.log('Data fetched from API:', response.data.results);
       spaceNews = response.data.results;
-      console.log('spaceNews:', spaceNews);
-      console.log('Number of properties:', Object.keys(spaceNews).length);
-      console.log('First item:', spaceNews[0]);
+      spaceNews.forEach((obj) => {
+        const dateString = obj.published_at;
+        const date = new Date(dateString);
+        const options = { month: 'long', day: 'numeric', year: 'numeric' };
+        const formattedDate = date.toLocaleDateString('en-US', options);
+
+        obj.published_at = formattedDate;
+      });
+
+      //console.log('spaceNews:', spaceNews);
+      //console.log('Number of properties:', Object.keys(spaceNews).length);
+      //console.log('First item:', spaceNews[0]);
 
       cache.put(
         `spaceNews_${limit}_${offset}_${req.query.title_contains}`,
